@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 
 class LocationService {
@@ -15,7 +16,7 @@ class LocationService {
       if (!_serviceEnabled) {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Location permissions are denied')));
-        return null!;
+        // return Future.error('Location service not enabled');
       }
     }
 
@@ -26,7 +27,10 @@ class LocationService {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
                 'Location permissions are permanently denied, we cannot request permissions.')));
-        return null!;
+        return Future.microtask(() => throw PlatformException(
+            code: 'PERMISSION_DENIED',
+            message: 'Location permissions are denied',
+            details: null));
       }
     }
 

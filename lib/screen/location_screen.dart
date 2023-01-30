@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import '../services/location_service/get_user_current_location.dart';
@@ -20,8 +21,15 @@ class _MyCurrentLocationScreenState extends State<MyCurrentLocationScreen> {
   }
 
   void _getCurrentLocation() async {
-    _currentLocation =
-        await LocationService.instance.getCurrentLocation(context);
+    try {
+      _currentLocation =
+          await LocationService.instance.getCurrentLocation(context);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+
     setState(() {});
   }
 
@@ -32,7 +40,9 @@ class _MyCurrentLocationScreenState extends State<MyCurrentLocationScreen> {
         child: _currentLocation != null
             ? Text(
                 'Latitude: ${_currentLocation!.latitude}\nLongitude: ${_currentLocation!.longitude}')
-            : const CircularProgressIndicator(),
+            : InkWell(
+                onTap: () => _getCurrentLocation(),
+                child: const Text('Get Location')),
       ),
     );
   }
